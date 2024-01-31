@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Results</title>
+    <link rel="stylesheet" href="style.css">
+
+    {% load static %}
+    <style>
+
+      /* Set a dark background color for the page */
+      body {
+        background-color: #111;
+        color: #fff; /* Set text color to white */
+        font-family: "Arial", sans-serif;
+      }
+    
+      /* Set a blue color for hyperlinks */
+      a {
+        color: #00ffff;
+      }
+    
+      /* Set a white color for headings */
+      h1, h2, h3 {
+        color: #fff;
+      }
+    
+      table {
+        border-collapse: collapse;
+        margin: 1rem 0;
+        width: 100%;
+      }
+    
+      th,
+      td {
+        padding: 0.5rem;
+        border: none;
+        border-bottom: 1px solid #00ffff;
+        text-align: left;
+        font-size: 1.1rem;
+        color: #aaa;
+      }
+    
+      th {
+        background-color: #222;
+        color: #00ffff;
+      }
+    
+      ul {
+        margin: 0;
+        padding: 0;
+      }
+    
+      li {
+        list-style: none;
+        margin: 0.5rem 0;
+        font-size: 1.1rem;
+        line-height: 1.5;
+        color: #aaa;
+      }
+    
+      ul li:before {
+        content: '\25CF'; /* Use a larger bullet symbol */
+        font-weight: bold;
+        margin-right: 0.5rem;
+        color: #00ffff;
+      }
+    
+      p {
+        margin: 1rem 0;
+        font-size: 1.2rem;
+        line-height: 1.5;
+        color: #ccc;
+      }
+    
+      /* Set a yellow highlight color */
+      .highlight {
+        background-color: #ffff00;
+        color: #000;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.5rem;
+        font-weight: bold;
+      }
+    
+   
+      /* Add a futuristic logo */
+      .logo-container {
+        position: relative;
+        height: 50px;
+        width: 100px;
+        margin: 1rem 0;
+      }
+    
+      .logo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 80%;
+        width: 80%;
+        object-fit: contain;        
+      }
+
+      .button-container {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+      }
+  
+      .button-container a {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: #00ffff;
+        color: #111;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+
+    
+    </style>
+  </head>
+
+  <body>
+
+
+    <div class="logo-container">
+      <img src="{% static 'r3a.png' %}" alt="logo" class="logo">
+    </div>
+
+
+    <h1>Smart Search Results</h1>
+    <p> Smart Search Application searched through the documents and extracted the sections that contained the specified keyword(s), providing a quick and efficient way to locate relevant information. </p>
+    
+    
+    {% if results %}  
+
+      <table>
+        <thead>
+          <tr>
+            <th>File Name</th>
+            <th>Sections</th>            
+          </tr>
+        </thead>
+        <tbody>
+        {% for filename, sections in results.items %}
+          <tr>
+            <td>{{ filename }}</td>
+            <td>
+              <ul>
+              {% for section in sections %}
+                <li>{{ section|safe }}</li>
+              {% endfor %}
+              </ul>
+            </td>
+
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No sections found containing the specified keywords</p>
+    {% endif %}
+
+    <script> 
+
+    // This script will highlight the table row when the user hovers over it
+    const tableRows = document.querySelectorAll("table tr");
+    tableRows.forEach(row => {
+      row.addEventListener("mouseenter", () => {
+        row.style.backgroundColor = "#f5f5f5";
+      });
+      row.addEventListener("mouseleave", () => {
+        row.style.backgroundColor = "transparent";
+      });
+    });
+
+    // This script will highlight the keywords in the sections
+    const keywords = '{{ keywords }}'.split(",");
+    const highlightClass = 'highlight';
+    const sections = document.querySelectorAll('.results li');
+    sections.forEach(section => {
+      keywords.forEach(keyword => {
+        let regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+        section.innerHTML = section.innerHTML.replace(regex, `<span class="${highlightClass}">$&</span>`);
+      });
+    });
+
+    </script>
+
+    <div class="button-container"> <!-- Added container for the button -->
+      <a href="{% url 'download_csv' %}" class="btn btn-primary">Download Results</a>
+    </div>
+
+
+  </body>
+</html>
+
+
+
+
+
+

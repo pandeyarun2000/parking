@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search PDF</title>
+  </head>
+  <body>
+    <h1>Search for keywords in a PDF file</h1>
+    <form action="{% url 'search-pdf' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="keywords">Keywords:</label>
+      <input type="text" name="keywords" id="keywords">
+      <br>
+      <label for="pdf_file">PDF file:</label>
+      <input type="file" name="pdf_file" id="pdf_file">
+      <br>
+      <button type="submit">Search</button>
+    </form>
+  </body>
+</html>
